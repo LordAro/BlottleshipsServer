@@ -6,26 +6,37 @@
 /** @file blottleships.cpp Functions related to starting BlottleshipsServer. */
 
 #include <iostream>
+#include <vector>
 
 #include <boost/asio.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
 using namespace boost::asio;
 
+/** Wrapper for a tcp socket connection. */
 class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 {
 public:
+	/**
+	 * Constructor.
+	 * @param socket Socket to get data in/out of.
+	 */
 	TcpConnection(ip::tcp::socket socket)
 		: socket(std::move(socket)),
 		  readbuf(1024),
 		  writebuf(1024)
 	{}
 
+	/** Start reading data from the socket. */
 	void StartRead()
 	{
 		this->DoRead();
 	}
 
+	/**
+	 * Setup data to be sent.
+	 * @param s String to send. Must end with a newline.
+	 */
 	void Send(std::string s)
 	{
 		assert(s.back() == '\n');
@@ -35,6 +46,7 @@ public:
 	}
 
 private:
+	/** Read data from the socket, and send it somewhere to be handled. */
 	void DoRead()
 	{
 		auto self(shared_from_this());
@@ -47,18 +59,21 @@ private:
 					boost::trim(str);
 					std::cout << "Listened: " << str << std::endl;
 
-					// TODO: Do stuff with str
+					/* @todo Do stuff with str */
 					this->readbuf.consume(length);
 					this->Send("Test\n");
 
-					/* Continue reading (must be last) */
-					this->DoRead();
+					this->DoRead(); // Continue reading (must be last)
 				}
 				/* There were errors, abort */
 				std::cout << "Client disconnected!" << std::endl;
 			});
 	}
 
+	/**
+	 * Write data into the socket.
+	 * @param length Length of data (in bytes) to write.
+	 */
 	void DoWrite(std::size_t length)
 	{
 		auto self(shared_from_this());
@@ -69,14 +84,20 @@ private:
 			});
 	}
 
-	ip::tcp::socket socket;
-	basic_streambuf<> readbuf;
-	basic_streambuf<> writebuf;
+	ip::tcp::socket socket;     ///< Socket that we're connected with.
+	basic_streambuf<> readbuf;  ///< Buffer for reading data.
+	basic_streambuf<> writebuf; ///< Buffer for writing data that is to be sent.
 };
 
+/** Wrapper around a tcp listener. */
 class TcpServer
 {
 public:
+	/**
+	 * Constructor.
+	 * @param io_service Socket to listen to new connections on.
+	 * @param port Network port to listen on.
+	 */
 	TcpServer(io_service& io_service, short port)
 		: acceptor(io_service, ip::tcp::endpoint(ip::tcp::v4(), port)),
 		  socket(io_service)
@@ -85,6 +106,7 @@ public:
 	}
 
 private:
+	/** Accept an incoming connection */
 	void DoAccept()
 	{
 		this->acceptor.async_accept(this->socket,
@@ -98,11 +120,16 @@ private:
 			});
 	}
 
-	ip::tcp::acceptor acceptor;
-	ip::tcp::socket socket;
+	ip::tcp::acceptor acceptor; ///< Listener.
+	ip::tcp::socket socket;     ///< Socket to bind connections to.
 };
 
 
+/**
+ * Entry point.
+ * @param argc Number of commandline parameters.
+ * @param argv Parameters.
+ */
 int main(int argc, char *argv[])
 {
 	std::cout << "Ohai" << std::endl;
