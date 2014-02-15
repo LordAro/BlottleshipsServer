@@ -13,6 +13,8 @@
 
 using namespace boost::asio;
 
+class Manager;
+
 /** Wrapper for a tcp socket connection. */
 class Player : public std::enable_shared_from_this<Player>
 {
@@ -21,10 +23,11 @@ public:
 	 * Constructor.
 	 * @param socket Socket to get data in/out of.
 	 */
-	Player(ip::tcp::socket socket)
+	Player(ip::tcp::socket socket, Manager &manager)
 		: socket(std::move(socket)),
 		  readbuf(1024),
-		  writebuf(1024)
+		  writebuf(1024),
+		  manager(manager)
 	{}
 
 	/** Start reading data from the socket. */
@@ -87,6 +90,7 @@ private:
 	ip::tcp::socket socket;     ///< Socket that we're connected with.
 	basic_streambuf<> readbuf;  ///< Buffer for reading data.
 	basic_streambuf<> writebuf; ///< Buffer for writing data that is to be sent.
+	const Manager &manager;     ///< Reference to the Manager instance.
 };
 
 /** Wrapper around a tcp listener. */
@@ -113,7 +117,8 @@ private:
 			[this](boost::system::error_code ec)
 			{
 				if (!ec) {
-					std::make_shared<Player>(std::move(this->socket))->StartRead();
+					auto player = std::make_shared<Player>(std::move(this->socket), *this);
+					player->StartRead();
 					std::cout << "New client!" << std::endl;
 				}
 				this->DoAccept();
