@@ -18,3 +18,6 @@ $(TARGET): $(OBJECTS)
 
 run: $(TARGET)
 	./$(TARGET)
+
+clean:
+	rm -f $(OBJECTS) $(TARGET)
