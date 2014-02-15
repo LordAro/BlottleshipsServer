@@ -1,6 +1,6 @@
 /*
  * This file is part of BlottleshipsServer.
- * BAPS is licenced under MIT License. See LICENSE for more details.
+ * BlottleshipsServer is licenced under MIT License. See LICENSE for more details.
  */
 
 /** @file manager.h Function declarations of the game manager. */
