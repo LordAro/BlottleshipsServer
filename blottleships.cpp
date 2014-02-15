@@ -6,7 +6,8 @@
 /** @file blottleships.cpp Functions related to starting BlottleshipsServer. */
 
 #include <iostream>
-#include <vector>
+#include <list>
+#include <memory>
 
 #include <boost/asio.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -119,6 +120,7 @@ private:
 				if (!ec) {
 					auto player = std::make_shared<Player>(std::move(this->socket), *this);
 					player->StartRead();
+					this->connections.push_back(std::move(player));
 					std::cout << "New client!" << std::endl;
 				}
 				this->DoAccept();
@@ -127,6 +129,8 @@ private:
 
 	ip::tcp::acceptor acceptor; ///< Listener.
 	ip::tcp::socket socket;     ///< Socket to bind connections to.
+
+	std::list<std::shared_ptr<Player>> connections; ///< List of alive Player connections.
 };
 
 
