@@ -13,9 +13,9 @@
 
 #include <boost/asio.hpp>
 
-class Manager;
-
 using namespace boost::asio;
+
+class Manager;
 
 /** Wrapper for a tcp socket connection. */
 class Player : public std::enable_shared_from_this<Player>
@@ -33,7 +33,7 @@ private:
 	ip::tcp::socket socket;     ///< Socket that we're connected with.
 	basic_streambuf<> readbuf;  ///< Buffer for reading data.
 	basic_streambuf<> writebuf; ///< Buffer for writing data that is to be sent.
-	const Manager &manager;     ///< Reference to the Manager instance.
+	Manager &manager;           ///< Reference to the Manager instance.
 };
 
 #endif /* PLAYER_H */

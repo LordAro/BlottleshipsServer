@@ -8,6 +8,7 @@
 #include <boost/algorithm/string/trim.hpp>
 
 #include "player.h"
+#include "manager.h"
 
 /**
  * Constructor.
@@ -58,7 +59,8 @@ void Player::DoRead()
 				this->DoRead(); // Continue reading (must be last)
 			}
 			/* There were errors, abort */
-			std::cout << "Client disconnected!" << std::endl;
+			this->manager.DisconnectPlayer(self);
+			std::cout << "Client disconnected! " << ec.message() << std::endl;
 		});
 }
 

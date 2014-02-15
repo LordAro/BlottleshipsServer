@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "manager.h"
+#include "player.h"
 
 /**
  * Constructor.
@@ -19,6 +20,17 @@ Manager::Manager(io_service& io_service, short port)
 	  socket(io_service)
 {
 	this->DoAccept();
+}
+
+/**
+ * Disconnects a player, and removes them from the list.
+ * @param player Player to remove.
+ */
+void Manager::DisconnectPlayer(std::shared_ptr<Player> player)
+{
+	auto it = std::find(this->connections.begin(), this->connections.end(), player);
+	assert(it != this->connections.end());
+	this->connections.erase(it);
 }
 
 /** Accept an incoming connection */

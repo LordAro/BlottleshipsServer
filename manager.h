@@ -8,14 +8,14 @@
 #ifndef MANAGER_H
 #define MANAGER_H
 
-#include <list>
 #include <memory>
+#include <vector>
 
 #include <boost/asio.hpp>
 
-#include "player.h"
-
 using namespace boost::asio;
+
+class Player;
 
 /** Wrapper around a tcp listener. */
 class Manager
@@ -23,13 +23,14 @@ class Manager
 public:
        Manager(io_service& io_service, short port);
 
+	   void DisconnectPlayer(std::shared_ptr<Player>);
 private:
        void DoAccept();
 
        ip::tcp::acceptor acceptor; ///< Listener.
        ip::tcp::socket socket;     ///< Socket to bind connections to.
 
-       std::list<std::shared_ptr<Player>> connections; ///< List of alive Player connections.
+       std::vector<std::shared_ptr<Player>> connections; ///< List of alive Player connections.
 };
 
 #endif /* MANAGER_H */
