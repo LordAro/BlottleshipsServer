@@ -1,3 +1,6 @@
+# This file is part of BlottleshipsServer.
+# BlottleshipsServer is licenced under MIT License. See LICENSE for more details.
+
 CXX=clang++
 CXXFLAGS=-c -Wall -pedantic -g -std=c++11
 LDFLAGS=-lboost_system
