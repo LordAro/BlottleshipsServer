@@ -14,14 +14,14 @@
 using namespace boost::asio;
 
 /** Wrapper for a tcp socket connection. */
-class TcpConnection : public std::enable_shared_from_this<TcpConnection>
+class Player : public std::enable_shared_from_this<Player>
 {
 public:
 	/**
 	 * Constructor.
 	 * @param socket Socket to get data in/out of.
 	 */
-	TcpConnection(ip::tcp::socket socket)
+	Player(ip::tcp::socket socket)
 		: socket(std::move(socket)),
 		  readbuf(1024),
 		  writebuf(1024)
@@ -90,7 +90,7 @@ private:
 };
 
 /** Wrapper around a tcp listener. */
-class TcpServer
+class Manager
 {
 public:
 	/**
@@ -98,7 +98,7 @@ public:
 	 * @param io_service Socket to listen to new connections on.
 	 * @param port Network port to listen on.
 	 */
-	TcpServer(io_service& io_service, short port)
+	Manager(io_service& io_service, short port)
 		: acceptor(io_service, ip::tcp::endpoint(ip::tcp::v4(), port)),
 		  socket(io_service)
 	{
@@ -113,7 +113,7 @@ private:
 			[this](boost::system::error_code ec)
 			{
 				if (!ec) {
-					std::make_shared<TcpConnection>(std::move(this->socket))->StartRead();
+					std::make_shared<Player>(std::move(this->socket))->StartRead();
 					std::cout << "New client!" << std::endl;
 				}
 				this->DoAccept();
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
 {
 	std::cout << "Ohai" << std::endl;
 	io_service io_serv;
-	TcpServer s(io_serv, 4500);
+	Manager s(io_serv, 4500);
 
 	io_serv.run();
 }
