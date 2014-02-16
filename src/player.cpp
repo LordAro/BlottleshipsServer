@@ -49,18 +49,18 @@ void Player::DoRead()
 			if (!ec) {
 				auto bufs = this->readbuf.data();
 				std::string str(buffers_begin(bufs), buffers_begin(bufs) + length);
+				this->readbuf.consume(length);
 				boost::trim(str);
-				std::cout << "Listened: " << str << std::endl;
+				std::cout << "Received: " << str << std::endl;
 
 				/* @todo Do stuff with str */
-				this->readbuf.consume(length);
-				this->Send("Test\n");
+				this->Send("echo: " + str + '\n');
 
 				this->DoRead(); // Continue reading (must be last)
 			} else {
 				/* There were errors, abort */
 				this->manager.DisconnectPlayer(self);
-				std::cout << "Client disconnected! " << ec.message() << std::endl;
+				std::cout << "Client disconnected: " << ec.message() << std::endl;
 			}
 		});
 }

@@ -18,9 +18,9 @@
  */
 int main(int argc, char *argv[])
 {
-	std::cout << "Ohai" << std::endl;
 	boost::asio::io_service io_serv;
 	Manager s(io_serv, 4500);
+	std::cout << "Started listening on port 4500" << std::endl;
 
 	io_serv.run();
 }

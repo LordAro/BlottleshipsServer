@@ -43,7 +43,7 @@ void Manager::DoAccept()
 				auto player = std::make_shared<Player>(std::move(this->socket), *this);
 				player->StartRead();
 				this->connections.push_back(std::move(player));
-				std::cout << "New client!" << std::endl;
+				std::cout << "New client connected" << std::endl;
 				this->DoAccept();
 			}
 		});
