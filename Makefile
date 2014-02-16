@@ -24,5 +24,8 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 run: $(TARGET)
 	./$(TARGET)
 
+gdbrun: $(TARGET)
+	gdb $(TARGET)
+
 clean:
 	rm -f $(OBJECTS) $(TARGET)
