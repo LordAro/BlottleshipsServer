@@ -7,6 +7,7 @@
 
 #include <boost/algorithm/string/trim.hpp>
 
+#include "command.h"
 #include "player.h"
 #include "manager.h"
 
@@ -52,6 +53,13 @@ void Player::DoRead()
 				this->readbuf.consume(length);
 				boost::trim(str);
 				std::cout << "Received: " << str << std::endl;
+
+				std::unique_ptr<Command> cmd = nullptr;
+				try {
+					cmd = std::unique_ptr<Command>(new Command(str));
+				} catch (boost::property_tree::json_parser::json_parser_error &je) {
+					/* @todo Deal with invalid command. */
+				}
 
 				/* @todo Do stuff with str */
 				this->Send("echo: " + str + '\n');

@@ -8,7 +8,7 @@ SRCDIR=src
 CXX=clang++
 CXXFLAGS=-c -Wall -pedantic -g -std=c++11
 LDFLAGS=-lboost_system
-SOURCES=blottleships.cpp manager.cpp player.cpp
+SOURCES=command.cpp blottleships.cpp manager.cpp player.cpp
 
 OBJECTS=$(addprefix $(OBJDIR)/,$(SOURCES:.cpp=.o))
 TARGET=$(BINDIR)/blottleships
