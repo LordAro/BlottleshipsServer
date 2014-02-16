@@ -44,8 +44,8 @@ void Manager::DoAccept()
 				player->StartRead();
 				this->connections.push_back(std::move(player));
 				std::cout << "New client!" << std::endl;
+				this->DoAccept();
 			}
-			this->DoAccept();
 		});
 }
 

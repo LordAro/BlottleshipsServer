@@ -57,10 +57,11 @@ void Player::DoRead()
 				this->Send("Test\n");
 
 				this->DoRead(); // Continue reading (must be last)
+			} else {
+				/* There were errors, abort */
+				this->manager.DisconnectPlayer(self);
+				std::cout << "Client disconnected! " << ec.message() << std::endl;
 			}
-			/* There were errors, abort */
-			this->manager.DisconnectPlayer(self);
-			std::cout << "Client disconnected! " << ec.message() << std::endl;
 		});
 }
 
